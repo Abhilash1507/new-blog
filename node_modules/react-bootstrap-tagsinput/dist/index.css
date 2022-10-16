@@ -1,0 +1,4 @@
+/* add css module styles here (optional) */
+.input-tags:focus {
+  outline: 0;
+}
