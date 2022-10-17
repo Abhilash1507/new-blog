@@ -7,7 +7,7 @@ import AddEditBlog from './pages/AddEditBlog';
 import About from './pages/About';
 import NotFound from './pages/NotFound';
 import {Routes,Route, useNavigate, Navigate} from 'react-router-dom'
-import {ToastContainer,toast} from 'react-toastify';
+import {ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Header from './Components/Header';
 import SignUp from './pages/SignUp';
@@ -53,7 +53,7 @@ function App() {
        <Route exact path='/update/:id' element={user?.uid ? <AddEditBlog user={user}/> :<Navigate to='/' setActive={setActive}/>}/>
        <Route exact path='/about' element={<About/>}/>
        <Route exact path='/signUp' element={<SignUp setActive={setActive}/>}/>
-       <Route exact path='/signin' element={<SignIn setActive={setActive}/>}/>
+       <Route exact path='/signin' element={<SignIn setActive={setActive} setUser={setUser}/>}/>
        <Route exact path='*' element={<NotFound/>}/>
      </Routes>
      

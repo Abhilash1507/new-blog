@@ -29,7 +29,7 @@ const Home = ({setActive,user}) => {
       collection(db, "blogs"),
       (snapshot) => {
         let list = [];
-        console.log(snapshot);
+     
         snapshot.docs.forEach((doc) => {
          
           list.push({ id: doc.id, ...doc.data() });
@@ -39,7 +39,7 @@ const Home = ({setActive,user}) => {
           setActive("home");
       },
       (error) => {
-        console.log(error);
+      
       }
     );
 
@@ -47,7 +47,7 @@ const Home = ({setActive,user}) => {
       unSubscribe();
       getTrendingBlogs();
     };
-  }, []);
+  }, [setActive]);
 
   if(loading){
     return <Spinner/>
@@ -61,7 +61,7 @@ const Home = ({setActive,user}) => {
         toast.success("Blog deleted successfully");
         setLoading(false);
       } catch (err) {
-        console.log(err);
+      
       }
     }
   };

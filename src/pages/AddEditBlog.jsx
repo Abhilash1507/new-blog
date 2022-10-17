@@ -42,21 +42,21 @@ const AddEditBlog = ({user,setActive}) => {
         (snapshot) => {
           const progress =
             (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          console.log("Upload is " + progress + "% done");
+         
           setProgress(progress);
           switch (snapshot.state) {
             case "paused":
-              console.log("Upload is paused");
+           
               break;
             case "running":
-              console.log("Upload is running");
+   
               break;
             default:
               break;
           }
         },
         (error) => {
-          console.log(error);
+      
         },
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then((downloadUrl) => {
@@ -109,7 +109,7 @@ const AddEditBlog = ({user,setActive}) => {
           });
           toast.success("Blog created successfully");
         } catch (err) {
-          console.log(err);
+      
         }
       } else {
         try {
@@ -121,7 +121,7 @@ const AddEditBlog = ({user,setActive}) => {
           });
           toast.success("Blog updated successfully");
         } catch (err) {
-          console.log(err);
+      
         }
       }
     } else {
@@ -202,7 +202,7 @@ const AddEditBlog = ({user,setActive}) => {
                 <input type="file" className="form-control" onChange={(event)=> setFile(event.target.files[0]) } />
                </div>
                <div className="col-12 py-3 text-center">
-                <button className="btn btn-add" type="submit">{id ? "Update Blog":"Create Blog"}</button>
+                <button className="btn btn-add"  disabled={progress !== null && progress < 100} type="submit">{id ? "Update Blog":"Create Blog"}</button>
                </div>
             </form>
           </div>
