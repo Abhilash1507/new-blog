@@ -1,7 +1,9 @@
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { React, useState, useEffect } from "react";
-import { storage } from "../Firebase";
+import { db, storage } from "../Firebase";
 import { toast } from "react-toastify";
+import { addDoc, collection, doc, getDoc, serverTimestamp, updateDoc } from "firebase/firestore";
+import { useNavigate,useParams} from "react-router-dom";
 
 
 const initialState = {
@@ -22,15 +24,16 @@ const categoryOption = [
   "Business",
 ];
 
-const AddEditBlog = () => {
+const AddEditBlog = ({user,setActive}) => {
   const [form, setForm] = useState(initialState);
   const [file, setFile] = useState(null);
   const [progress,setProgress] = useState(null);
 
+  const {id} = useParams();  
+  const navigate = useNavigate();
+
   const { title, category, trending, description } = form;
-    
- 
-  useEffect(() => {
+     useEffect(() => {
     const uploadFile = () => {
       const storageRef = ref(storage, file.name);
       const uploadTask = uploadBytesResumable(storageRef, file);
@@ -57,7 +60,7 @@ const AddEditBlog = () => {
         },
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then((downloadUrl) => {
-            toast.info("Image upload successfull");
+            toast.info("Image uploading successfully");
             setForm((prev) => ({ ...prev, imgUrl: downloadUrl }));
           });
         }
@@ -66,19 +69,78 @@ const AddEditBlog = () => {
 
     file && uploadFile();
   }, [file]);
+  
+  useEffect(()=>{
+    id && getBlogDetail();
+  },[id])
 
-  const handleChange = () => {};
-  const handleTrending = () => {};
-  const onCategoryChange = () => {};
+  const getBlogDetail = async () =>{
+     const docRef = doc(db,"blogs",id);
+     const snapshot = await getDoc(docRef);
+     if( snapshot.exists()){
+      setForm({...snapshot.data()})
+     }
+     setActive(null)
+  }
+   
+  const handleChange = (event) => {
+       event.preventDefault();
+       setForm({...form,[event.target.name]:event.target.value})
+  };
+  const handleTrending = (event) => {
+          event.preventDefault();
+          setForm({...form, trending: event.target.value})
+  };
+  const onCategoryChange = (event) => {
+       event.preventDefault();
+       setForm({...form,category:event.target.value})
+  };
+  
+  const handleSubmit = async (event) =>{
+     event.preventDefault();
+     if (category  && title && description && trending) {
+      if (!id) {
+        try {
+          await addDoc(collection(db, "blogs"), {
+            ...form,
+            timestamp: serverTimestamp(),
+            author: user.displayName,
+            userId: user.uid,
+          });
+          toast.success("Blog created successfully");
+        } catch (err) {
+          console.log(err);
+        }
+      } else {
+        try {
+          await updateDoc(doc(db, "blogs", id), {
+            ...form,
+            timestamp: serverTimestamp(),
+            author: user.displayName,
+            userId: user.uid,
+          });
+          toast.success("Blog updated successfully");
+        } catch (err) {
+          console.log(err);
+        }
+      }
+    } else {
+      return toast.error("All fields are mandatory to fill");
+    }
+
+    
+     navigate('/')
+  }
+   
   return (
     <div className="container-fluid mb-4">
       <div className="container">
         <div className="col-12">
-          <div className="text-center heading py-2">create blog</div>
+          <div className="text-center heading py-4">{id ? "Update Blog":"Create Blog"}</div>
         </div>
         <div className="row h-100 justify-content-center align-items-center">
           <div className="col-10 col-md-8 col-lg-6">
-            <form action="">
+            <form action="" onSubmit={handleSubmit}>
               <div className="col-12 py-3">
                 <input
                   type="text"
@@ -98,7 +160,7 @@ const AddEditBlog = () => {
                     value="yes"
                     name="radioOption"
                     checked={trending === "yes"}
-                    onChange={handleChange}
+                    onChange={handleTrending}
                   />
                   <label htmlFor="radioOption" className="form-check-label">
                     Yes&nbsp;
@@ -140,7 +202,7 @@ const AddEditBlog = () => {
                 <input type="file" className="form-control" onChange={(event)=> setFile(event.target.files[0]) } />
                </div>
                <div className="col-12 py-3 text-center">
-                <button className="btn btn-add" type="submit">submit</button>
+                <button className="btn btn-add" type="submit">{id ? "Update Blog":"Create Blog"}</button>
                </div>
             </form>
           </div>

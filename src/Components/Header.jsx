@@ -1,13 +1,14 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import transitions from "bootstrap";
 const Header = ({ active, setActive, user,handleLogout }) => {
   const userId = user?.uid;
     return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-light">
+      <nav className="navbar navbar-expand-lg navbar-light bg-light">
       <div className="container-fluid bg-faded padding-media">
         <div className="container padding-media">
-        <nav className="navbar navbar-toggleable-md navbar-light">
-          <button
+          <nav className="navbar navbar-toggleable-md navbar-light">
+            <button
               className="navbar-toggler mt-3"
               type="button"
               data-bs-toggle="collapse"
@@ -23,10 +24,7 @@ const Header = ({ active, setActive, user,handleLogout }) => {
               className="collapse navbar-collapse"
               id="navbarSupportedContent"
             >
-              <ul
-                className="navbar-nav me-auto mb-2 mb-lg-0"
-                id="navbarsupportedContent"
-              >
+              <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                 <Link to={"/"} style={{ textDecoration: "none" }}>
                   <li
                     className={`nav-item nav-link ${
