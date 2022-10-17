@@ -24,7 +24,7 @@ const Header = ({ active, setActive, user,handleLogout }) => {
               className="collapse navbar-collapse"
               id="navbarSupportedContent"
             >
-              <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+              <ul className="navbar-nav me-auto mb-2 mt-3 mb-lg-0">
                 <Link to={"/"} style={{ textDecoration: "none" }}>
                   <li
                     className={`nav-item nav-link ${
